@@ -1,4 +1,4 @@
-name: 🚀 Hrms Upload Files to Hostinger via SFTP
+name: 🚀 EMP Upload Files to Hostinger via SFTP
 
 on:
   push:
