@@ -17,17 +17,17 @@ import { MdOutlineHomeWork } from "react-icons/md";
 import { MdOutlinePolicy } from "react-icons/md";
 import { CiMail } from "react-icons/ci";
 import { TbPhotoBitcoin } from "react-icons/tb";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const location = useLocation();
-  const currentPath = location.pathname; 
+  const currentPath = location.pathname;
   const [userDetails, setUserDetails] = useState([]);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const bidding = JSON.parse(localStorage.getItem("hrms_employee"));
   const role = bidding?.role?.name;
-
-  
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("hrms_employee"));
@@ -84,14 +84,43 @@ const Sidebar = () => {
     });
   }
 
+  const [changePasswordIsOpen, setChangePasswordIsOpen] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+
+  const changePassword = (e) => {
+    e.stopPropagation()
+    setChangePasswordIsOpen(true);
+  };
+
+  const changePasswordAdmin = async () => {
+    const user = JSON.parse(localStorage.getItem("hrms_employee"));
+
+    const id = user?._id ? user?._id : "";
+    const payload = {
+      id: id,
+      newPassword: adminPassword,
+    };
+    try {
+      const response = await axios.post(
+        `${API_URL}api/employees/change-password`,
+        payload
+      );
+      setAdminPassword("");
+      setChangePasswordIsOpen(false);
+      toast.success("Password changed successfully");
+    } catch (error) {
+      console.error("Error changing password", error);
+    }
+  };
+
   return (
     <div>
       <section
-        className={`bg-white max-md:hidden transition-all duration-500 flex flex-col  ${
+        className={`bg-white max-md:hidden transition-all duration-500 flex flex-col   ${
           arrowClicked ? "w-[60px]" : "w-52"
         }`}
       >
-        <div className="fixed flex flex-col   h-full">
+        <div className="fixed flex flex-col  max-h-screen overflow-y-scroll no-scrollbar">
           {/* Toggle Button */}
           <div
             className="flex justify-end  mt-5 items-center"
@@ -161,7 +190,7 @@ const Sidebar = () => {
                       },
                     ]
                   : []),
-                   ...(role === "Online Bidder"
+                ...(role === "Online Bidder"
                   ? [
                       {
                         icon: <TbPhotoBitcoin />,
@@ -169,7 +198,7 @@ const Sidebar = () => {
                         path: "bidding",
                       },
                     ]
-                  : []),  
+                  : []),
 
                 // { icon: <RiTeamLine/>, label: "Teamwork" },
               ].map((item, idx) => (
@@ -247,6 +276,14 @@ const Sidebar = () => {
                     {userDetails.employeeName}
                     {/* venu */}
                   </p>
+                  <div className="">
+                    <button
+                      onClick={(e)=>changePassword(e)}
+                      className="p-1 px-2 rounded-full  items-center mt-2 mb-2 bg-[#e6f2fe] cursor-pointer text-[#4656b9]  text-xs"
+                    >
+                      Change Password
+                    </button>
+                  </div>
                 </div>
               )}
               {/* {!arrowClicked && (
@@ -255,9 +292,41 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
+        {changePasswordIsOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-1 md:p-0"
+              onClick={() => setChangePasswordIsOpen(false)}
+            >
+              <div
+                className="bg-white p-5 px-8 rounded-xl w-[400px] h-[200px] overflow-y-auto relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 className="text-lg font-bold">Change Password</h2>
+                <input
+                  type="text"
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className=" border-2 rounded-md border-gray-300 px-3 py-2 outline-none w-full mt-4"
+                  placeholder="Change Password"
+                />
+
+                <div className="flex justify-end">
+                  <button
+                    onClick={changePasswordAdmin}
+                    className="bg-blue-600 px-4 py-2 text-white rounded-lg mt-5 "
+                  >
+                    Update
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
       </section>
+
+      
     </div>
+    
   );
+  
 };
 
 export default Sidebar;
