@@ -330,11 +330,12 @@ const Attendance_Mainbar = () => {
                       value="Day Shift"
                       onChange={(e) => setShift(e.target.value)}
                       checked={shift === "Day Shift"}
+                      disabled={attendanceTableList[0]?.shift === "Night Shift" ? true : false }
                     />
                     <label htmlFor="Day Shift">Day Shift</label>
                   </div>
 
-                  {/* <div className="flex gap-1">
+                  <div className="flex gap-1">
                     <input
                       type="radio"
                       name="Night Shift"
@@ -342,9 +343,11 @@ const Attendance_Mainbar = () => {
                       value="Night Shift"
                       onChange={(e) => setShift(e.target.value)}
                       checked={shift === "Night Shift"}
+                      disabled={attendanceTableList[0]?.shift === "Day Shift" ? true : false }
                     />
                     <label htmlFor="Night Shift">Night Shift</label>
-                  </div> */}
+                  </div>
+
                 </div>
               </div>
 
@@ -365,7 +368,7 @@ const Attendance_Mainbar = () => {
                       value="WFO"
                       onChange={(e) => setWorkType(e.target.value)}
                       checked={workType === "WFO"}
-                      disabled={attendanceTableList[0]?.workType === "WFH" ? true : false  }
+                      // disabled={attendanceTableList[0]?.workType === "WFH" ? true : false  }
                     />
                     <label htmlFor="WFO">WFO</label>
                   </div>
@@ -378,7 +381,7 @@ const Attendance_Mainbar = () => {
                       value="WFH"
                       onChange={(e) => setWorkType(e.target.value)}
                       checked={workType === "WFH"}
-                      disabled={attendanceTableList[0]?.workType === "WFO" ? true : false }
+                      // disabled={attendanceTableList[0]?.workType === "WFO" ? true : false }
                     />
                     <label htmlFor="WFH">WFH</label>
                   </div>
